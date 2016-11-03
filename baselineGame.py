@@ -13,6 +13,7 @@ def createBoard(n, arr):
 def printBoard(board):
 	for r in board:
 		print " ".join(r)
+	print "\n"
 
 # update game board
 def updateBoard(board, (row, col), charac):
@@ -25,11 +26,27 @@ def getBoardChar(board, (row, col)):
 
 # get random row
 def randRow(board):
-	return randint(0, len(board) - 1)
+	return randint(1, len(board))
 
 # get random column
 def randCol(board):
-	return randint(0, len(board[0]) - 1)
+	return randint(1, len(board[0]))
+
+# get random direction
+def randDir():
+	r = randint(0, 3)
+	if r == 0:
+		return "u"
+	elif r == 1:
+		return "d"
+	elif r == 2:
+		return "l"
+	elif r ==3:
+		return "r"
+	else:
+		return "u"
+	return "u"
+
 
 # is valid ship location
 def isValidShip(row, col, direc, n, shipType):
@@ -108,12 +125,94 @@ def getShipCoord(row, col, direc, n, shipType):
 		return []
 	return []
 
-# create ship locations
-#def createShips:
+# create AI ship locations
+def placeAIShips(board, n):
 	# 2 ship
+	loop2 = True
+	while(loop2):
+		r = randRow(board)
+		c = randCol(board)
+		d = randDir()
+		if isValidShip(r, c, d, n, 2):
+			coord2 = getShipCoord(r, c, d, n, 2)
+			board = updateBoard(board, coord2[0], "2")
+			board = updateBoard(board, coord2[1], "2")
+			loop2 = False
+		else: 
+			loop2 = True
+
+	# 3 ship
+	loop3 = True
+	while(loop3):
+		r = randRow(board)
+		c = randCol(board)
+		d = randDir()
+		if isValidShip(r, c, d, n, 3):
+			coord3 = getShipCoord(r, c, d, n, 3)
+			square0 = getBoardChar(board, coord3[0])
+			square1 = getBoardChar(board, coord3[1])
+			square2 = getBoardChar(board, coord3[2])
+			if square0 == "*" and square1 == "*" and square2 == "*":
+				board = updateBoard(board, coord3[0], "3")
+				board = updateBoard(board, coord3[1], "3")
+				board = updateBoard(board, coord3[2], "3")
+				loop3 = False
+			else:
+				loop3 = True
+		else: 
+			loop3 = True
+
+	# 4 ship
+	loop4 = True
+	while(loop4):
+		r = randRow(board)
+		c = randCol(board)
+		d = randDir()
+		if isValidShip(r, c, d, n, 4):
+			coord4 = getShipCoord(r, c, d, n, 4)
+			square0 = getBoardChar(board, coord4[0])
+			square1 = getBoardChar(board, coord4[1])
+			square2 = getBoardChar(board, coord4[2])
+			square3 = getBoardChar(board, coord4[3])
+			if square0 == "*" and square1 == "*" and square2 == "*" and square3 == "*":
+				board = updateBoard(board, coord4[0], "4")
+				board = updateBoard(board, coord4[1], "4")
+				board = updateBoard(board, coord4[2], "4")
+				board = updateBoard(board, coord4[3], "4")
+				loop4 = False
+			else:
+				loop4 = True
+		else: 
+			loop4 = True
+
+	# 5 ship
+	loop5 = True
+	while(loop5):
+		r = randRow(board)
+		c = randCol(board)
+		d = randDir()
+		if isValidShip(r, c, d, n, 5):
+			coord5 = getShipCoord(r, c, d, n, 5)
+			square0 = getBoardChar(board, coord5[0])
+			square1 = getBoardChar(board, coord5[1])
+			square2 = getBoardChar(board, coord5[2])
+			square3 = getBoardChar(board, coord5[3])
+			square4 = getBoardChar(board, coord5[4])
+			if square0 == "*" and square1 == "*" and square2 == "*" and square3 == "*" and square4 == "*":
+				board = updateBoard(board, coord5[0], "5")
+				board = updateBoard(board, coord5[1], "5")
+				board = updateBoard(board, coord5[2], "5")
+				board = updateBoard(board, coord5[3], "5")
+				board = updateBoard(board, coord5[4], "5")
+				loop5 = False
+			else:
+				loop5 = True
+		else: 
+			loop5 = True
+	return board
 
 
-# place ships on board
+
 
 # check if guess is a hit or miss
 
@@ -365,4 +464,8 @@ myBoard = updateBoard(myBoard, fiveShipCoord[4], "5")
 
 print("my board is this: \n")
 printBoard(myBoard)
+
+AIBoard = placeAIShips(AIBoard, n)
+print("AI board is this: \n")
+printBoard(AIBoard)
 # check if game is won or lost
