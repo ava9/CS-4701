@@ -15,6 +15,31 @@ def printBoard(board):
 		print " ".join(r)
 	print "\n"
 
+def isWin(board):
+	count = 0
+	for row in range(n):
+		for col in range(n):
+			if board[row][col] == "2" or board[row][col] == "3" or board[row][col] == "4" or board[row][col] == "5":
+				count = count + 1
+			else:
+				pass
+	if count > 0:
+		return False
+	else:
+		return True
+	return False
+
+# didnt work, updated the ai board for some reason
+#def maskBoard(board):
+#	temp = board
+#	for row in range(n):
+#		for col in range(n):
+#			if temp[row][col] == "2" or temp[row][col] == "3" or temp[row][col] == "4" or temp[row][col] == "5":
+#				temp[row][col] = "*"
+#			else:
+#				pass
+#	return (board, temp)
+
 # update game board
 def updateBoard(board, (row, col), charac):
 	board[row - 1][col - 1] = charac
@@ -46,6 +71,25 @@ def randDir():
 	else:
 		return "u"
 	return "u"
+
+# dont cheat
+def AIMove():
+	# simple random implementation for now, need to improve
+	AIloop = True
+	while AIloop:
+		r = randRow(myBoard)
+		c = randCol(myBoard)
+		if myBoard[r-1][c-1] == "M" or myBoard[r-1][c-1] == "H":
+			AIloop = True
+		else:
+			if myBoard[r-1][c-1] == "*":
+				myBoard[r-1][c-1] = "M"
+				AIloop = False
+				print("AI Missed ("+str(r)+", "+str(c)+")\n")
+			else:
+				myBoard[r-1][c-1] = "H"
+				AIloop = False
+				print("AI Hit ("+str(r)+", "+str(c)+")\n")
 
 
 # is valid ship location
@@ -305,25 +349,26 @@ while(loop3):
 	loop3 = not isValidShip(threeShipRow, threeShipCol, threeShipDir, n, 3)
 	if loop3 == True:
 		print "Invalid input. Ship coordinates are out of bounds and ship cannot be placed on board: \n"
-	threeShipCoord = getShipCoord(threeShipRow, threeShipCol, threeShipDir, n, 3)
-	square = getBoardChar(myBoard, threeShipCoord[0])
-	if square == "*":
-		pass
 	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop3 = True
-	square = getBoardChar(myBoard, threeShipCoord[1])
-	if square == "*":
-		pass
-	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop3 = True
-	square = getBoardChar(myBoard, threeShipCoord[2])
-	if square == "*":
-		pass
-	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop3 = True
+		threeShipCoord = getShipCoord(threeShipRow, threeShipCol, threeShipDir, n, 3)
+		square = getBoardChar(myBoard, threeShipCoord[0])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop3 = True
+		square = getBoardChar(myBoard, threeShipCoord[1])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop3 = True
+		square = getBoardChar(myBoard, threeShipCoord[2])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop3 = True
 threeShipCoord = getShipCoord(threeShipRow, threeShipCol, threeShipDir, n, 3)
 myBoard = updateBoard(myBoard, threeShipCoord[0], "3")
 myBoard = updateBoard(myBoard, threeShipCoord[1], "3")
@@ -361,31 +406,32 @@ while (loop4):
 	loop4 = not isValidShip(fourShipRow, fourShipCol, fourShipDir, n, 4)
 	if loop4 == True:
 		print "Invalid input. Ship coordinates are out of bounds and ship cannot be placed on board: \n"
-	fourShipCoord = getShipCoord(fourShipRow, fourShipCol, fourShipDir, n, 4)
-	square = getBoardChar(myBoard, fourShipCoord[0])
-	if square == "*":
-		pass
-	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop4 = True
-	square = getBoardChar(myBoard, fourShipCoord[1])
-	if square == "*":
-		pass
-	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop4 = True
-	square = getBoardChar(myBoard, fourShipCoord[2])
-	if square == "*":
-		pass
-	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop4 = True
-	square = getBoardChar(myBoard, fourShipCoord[3])
-	if square == "*":
-		pass
-	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop4 = True
+	else: 
+		fourShipCoord = getShipCoord(fourShipRow, fourShipCol, fourShipDir, n, 4)
+		square = getBoardChar(myBoard, fourShipCoord[0])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop4 = True
+		square = getBoardChar(myBoard, fourShipCoord[1])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop4 = True
+		square = getBoardChar(myBoard, fourShipCoord[2])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop4 = True
+		square = getBoardChar(myBoard, fourShipCoord[3])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop4 = True
 fourShipCoord = getShipCoord(fourShipRow, fourShipCol, fourShipDir, n, 4)
 myBoard = updateBoard(myBoard, fourShipCoord[0], "4")
 myBoard = updateBoard(myBoard, fourShipCoord[1], "4")
@@ -424,37 +470,38 @@ while(loop5):
 	loop5 = not isValidShip(fiveShipRow, fiveShipCol, fiveShipDir, n, 5)
 	if loop5 == True:
 		print "Invalid input. Ship coordinates are out of bounds and ship cannot be placed on board: \n"
-	fiveShipCoord = getShipCoord(fiveShipRow, fiveShipCol, fiveShipDir, n, 5)
-	square = getBoardChar(myBoard, fiveShipCoord[0])
-	if square == "*":
-		pass
 	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop5 = True
-	square = getBoardChar(myBoard, fiveShipCoord[1])
-	if square == "*":
-		pass
-	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop5 = True
-	square = getBoardChar(myBoard, fiveShipCoord[2])
-	if square == "*":
-		pass
-	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop5 = True
-	square = getBoardChar(myBoard, fiveShipCoord[3])
-	if square == "*":
-		pass
-	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop5 = True
-	square = getBoardChar(myBoard, fiveShipCoord[4])
-	if square == "*":
-		pass
-	else:
-		print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
-		loop5 = True
+		fiveShipCoord = getShipCoord(fiveShipRow, fiveShipCol, fiveShipDir, n, 5)
+		square = getBoardChar(myBoard, fiveShipCoord[0])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop5 = True
+		square = getBoardChar(myBoard, fiveShipCoord[1])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop5 = True
+		square = getBoardChar(myBoard, fiveShipCoord[2])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop5 = True
+		square = getBoardChar(myBoard, fiveShipCoord[3])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop5 = True
+		square = getBoardChar(myBoard, fiveShipCoord[4])
+		if square == "*":
+			pass
+		else:
+			print "Invalid input. Ship coordinates overlap with previous ship on board, please re-enter ship coordinates \n"
+			loop5 = True
 fiveShipCoord = getShipCoord(fiveShipRow, fiveShipCol, fiveShipDir, n, 5)
 myBoard = updateBoard(myBoard, fiveShipCoord[0], "5")
 myBoard = updateBoard(myBoard, fiveShipCoord[1], "5")
@@ -468,4 +515,47 @@ printBoard(myBoard)
 AIBoard = placeAIShips(AIBoard, n)
 print("AI board is this: \n")
 printBoard(AIBoard)
+
+while (not isWin(myBoard)) and (not isWin(AIBoard)):
+	# Enter square to hit 
+	userTargetRow = 0
+	gameRow = True
+	while(gameRow):
+		userTargetRow = raw_input("Enter the row of the square to hit where 1 <= row <= "+str(n)+":  \n")
+		if userTargetRow.isdigit() and (int(userTargetRow) >= 1) and (int(userTargetRow) <= n):
+			userTargetRow = int(userTargetRow)
+			gameRow = False
+		else:
+			print "Invalid input. Please only enter an interger row where 1 <= row <= "+str(n)+":  \n"
+			gameRow = True
+
+	userTargetCol = 0
+	gameCol = True
+	while(gameCol):
+		userTargetCol = raw_input("Enter the row of the square to hit where 1 <= row <= "+str(n)+":  \n")
+		if userTargetCol.isdigit() and (int(userTargetCol) >= 1) and (int(userTargetCol) <= n):
+			userTargetCol = int(userTargetCol)
+			gameCol = False
+		else:
+			print "Invalid input. Please only enter an interger row where 1 <= row <= "+str(n)+":  \n"
+			gameCol = True
+	square = getBoardChar(AIBoard, (userTargetRow, userTargetCol))
+	if (square == "2" or square == "3" or square == "4" or square == "5"):
+		AIBoard = updateBoard(AIBoard, (userTargetRow, userTargetCol), "H")
+		print("You Hit ("+str(userTargetRow)+", "+str(userTargetCol)+")\n")
+	else:
+		AIBoard = updateBoard(AIBoard, (userTargetRow, userTargetCol), "M")
+		print("You Missed ("+str(userTargetRow)+", "+str(userTargetCol)+")\n")
+	print("AI board is this: \n")
+	printBoard(AIBoard)
+
+	AIMove()
+	print("My board is this: \n")
+	printBoard(myBoard)
+
+if (isWin(myBoard)):
+	print "AI WINS"
+if (isWin(AIBoard)):
+	print "YOU WIN"
+
 # check if game is won or lost
