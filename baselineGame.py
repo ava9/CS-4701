@@ -1,5 +1,8 @@
 from random import randint
 
+#NOTES:
+#n is referenced in some functions where it's not an input, need to create global variable???
+
 myBoard = []
 AIBoard = []
 
@@ -72,24 +75,181 @@ def randDir():
 		return "u"
 	return "u"
 
-# dont cheat
+
+lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+down = -1
+left = -1
+right = -1
+startcoords = [-1,-1]
+latestcoords = [-1,-1]
+
+two = 0
+three1 = 0
+three2 = 0
+four = 0
+five = 0
+# dont cheat ????
 def AIMove():
 	# simple random implementation for now, need to improve
 	AIloop = True
 	while AIloop:
-		r = randRow(myBoard)
-		c = randCol(myBoard)
-		if myBoard[r-1][c-1] == "M" or myBoard[r-1][c-1] == "H":
-			AIloop = True
-		else:
-			if myBoard[r-1][c-1] == "*":
-				myBoard[r-1][c-1] = "M"
-				AIloop = False
-				print("AI Missed ("+str(r)+", "+str(c)+")\n")
+		#1) finish a kill
+		#2) find new target
+		if lasthit == -1: #seeking new target
+			#for i in range(len(myBoard)):
+			lowest = 5 #at least one ship because or else game would have been won
+			for row in range(len(myBoard)):
+				for col in range(len(myBoard)):
+					if myBoard[row][col] < lowest:
+						lowest = myBoard[row][col]
+			#go across all rows
+			#if there is interval of length lowest or bigger, choose lowest-th from left			
+			count = 0
+			for row in range(len(myBoard)):
+				for col in range(len(myBoard)):
+					if (not myBoard[row][col] == "H") and (not myBoard[row][col] == "M"):
+						count = count + 1
+						if count == lowest:
+							if myBoard[row][col] == "*":
+								myBoard[row][col] = "M"
+								#AIloop = False
+								print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
+								break
+							else:
+								myBoard[row][col] = "H"
+								startcoords = [row, col]
+								latestcoords = [row, col]
+								lasthit = 1
+								#AIloop = False
+								print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+								break
+
+
+					else: #interval cut short
+						count = 0
+				count = 0 #because end of column
+			count = 0
+			
+			for col in range(len(myBoard)):
+				for row in range(len(myBoard)):
+					if (not myBoard[row][col] == "H") and (not myBoard[row][col] == "M"):
+						count = count + 1
+						if count == lowest:
+							if myBoard[row][col] == "*":
+								myBoard[row][col] = "M"
+								#AIloop = False
+								print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
+								break
+							else:
+								myBoard[row][col] = "H"
+								startcoords = [row, col]
+								latestcoords = [row, col]
+								lasthit = 1
+								#AIloop = False
+								print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+								break
+
+
+					else: #interval cut short
+						count = 0
+				count = 0 #because end of column
+			count = 0			
+			
+			if count == 0:
+				print("ERROR ERROR ERROR did not find interval length lowest")
+
+
+		else: #kill existing target
+		#if you sink a ship, set up/down/eft/right all back to -1; set lasthit to -1, set startcoords and latestcoords to [-1,-1]		
+			if latestcoords[0] != 0 and up != 0: #not first row (top row)
+				if myBoard[row][col] == "*":
+					myBoard[row][col] = "M"
+					up = 0
+					#AIloop = False
+					print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
+					break
+				else:
+					myBoard[row][col] = "H"
+					latestcoords = [row, col]
+					lasthit = lasthit + 1
+					#ADI is there a way to indicate that a boat has been sunk??
+					#ADI need to add logic if this sunk the boat
+					#AIloop = False
+					print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+					break
+			if latestcoords[0] != len(myBoard) and down != 0: #not last row (bottom row)		
+				if myBoard[row][col] == "*":
+					myBoard[row][col] = "M"
+					down = 0
+					#AIloop = False
+					print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
+					break
+				else:
+					myBoard[row][col] = "H"
+					latestcoords = [row, col]
+					lasthit = lasthit + 1
+					#ADI is there a way to indicate that a boat has been sunk??
+					#ADI need to add logic if this sunk the boat
+					#AIloop = False
+					print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+					break
+			if latestcoords[1] != 0 and left != 0: #not first col (leftmost col)		
+				if myBoard[row][col] == "*":
+					myBoard[row][col] = "M"
+					left = 0
+					#AIloop = False
+					print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
+					break
+				else:
+					myBoard[row][col] = "H"
+					latestcoords = [row, col]
+					lasthit = lasthit + 1
+					#ADI is there a way to indicate that a boat has been sunk??
+					#ADI need to add logic if this sunk the boat
+					#AIloop = False
+					print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+					break
+			if latestcoords[1] != len(myBoard) and right != 0: #not last col (rightmost col)		
+				if myBoard[row][col] == "*":
+					myBoard[row][col] = "M"
+					right = 0
+					print("ERROR MUST GO RIGHT")
+					#AIloop = False
+					print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
+					break
+				else:
+					myBoard[row][col] = "H"
+					latestcoords = [row, col]
+					lasthit = lasthit + 1
+					#ADI is there a way to indicate that a boat has been sunk??
+					#ADI need to add logic if this sunk the boat
+					#AIloop = False
+					print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+					break
 			else:
-				myBoard[r-1][c-1] = "H"
-				AIloop = False
-				print("AI Hit ("+str(r)+", "+str(c)+")\n")
+				print("ERROR MUST GO RIGHT")		
+				
+		
+
+
+
+
+
+		#adi's code
+		#r = randRow(myBoard)
+		#c = randCol(myBoard)
+		#if myBoard[r-1][c-1] == "M" or myBoard[r-1][c-1] == "H":
+		#	AIloop = True
+		#else:
+		#	if myBoard[r-1][c-1] == "*":
+		#		myBoard[r-1][c-1] = "M"
+		#		AIloop = False
+		#		print("AI Missed ("+str(r)+", "+str(c)+")\n")
+		#	else:
+		#		myBoard[r-1][c-1] = "H"
+		#		AIloop = False
+		#		print("AI Hit ("+str(r)+", "+str(c)+")\n")
 
 
 # is valid ship location
