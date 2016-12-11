@@ -6,6 +6,20 @@ from random import randint
 myBoard = []
 AIBoard = []
 
+lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+down = -1
+left = -1
+right = -1
+startcoords = [-1,-1]
+latestcoords = [-1,-1]
+
+two = 0
+three1 = 0
+three2 = 0
+four = 0
+five = 0
+
 # setup game board
 def createBoard(n, arr):
 	for i in range(n):
@@ -75,24 +89,13 @@ def randDir():
 		return "u"
 	return "u"
 
-
-lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
-up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
-down = -1
-left = -1
-right = -1
-startcoords = [-1,-1]
-latestcoords = [-1,-1]
-
-two = 0
-three1 = 0
-three2 = 0
-four = 0
-five = 0
 # dont cheat ????
 def AIMove():
 	# simple random implementation for now, need to improve
 	AIloop = True
+	global lasthit, up, down, left, right, startcoords, latestcoords
+	global two, three1, three2, four, five
+
 	while AIloop:
 		#1) finish a kill
 		#2) find new target
