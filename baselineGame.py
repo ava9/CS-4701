@@ -29,8 +29,8 @@ def createBoard(n, arr):
 # print game board
 def printBoard(board):
 	for r in board:
-		print s.join(r)
-	print "%s\n"
+		print " ".join(r)
+	print "\n"
 
 def isWin(board):
 	count = 0
