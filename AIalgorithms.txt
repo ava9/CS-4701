@@ -1,1 +1,20 @@
 AI algorithms
+
+# dont cheat ????
+def AIMove():
+	# simple random implementation for now, need to improve
+	AIloop = True
+	while AIloop:
+		r = randRow(myBoard)
+		c = randCol(myBoard)
+		if myBoard[r-1][c-1] == "M" or myBoard[r-1][c-1] == "H":
+			AIloop = True
+		else:
+			if myBoard[r-1][c-1] == "*":
+				myBoard[r-1][c-1] = "M"
+				AIloop = False
+				print("AI Missed ("+str(r)+", "+str(c)+")\n")
+			else:
+				myBoard[r-1][c-1] = "H"
+				AIloop = False
+				print("AI Hit ("+str(r)+", "+str(c)+")\n")

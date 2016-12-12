@@ -29,8 +29,8 @@ def createBoard(n, arr):
 # print game board
 def printBoard(board):
 	for r in board:
-		print " ".join(r)
-	print "\n"
+		print (s.join(r))
+	print ("\n")
 
 def isWin(board):
 	count = 0
@@ -96,6 +96,8 @@ def AIMove():
 	global lasthit, up, down, left, right, startcoords, latestcoords
 	global two, three1, three2, four, five
 
+	breakyes = False
+
 	while AIloop:
 		#1) finish a kill
 		#2) find new target
@@ -118,6 +120,7 @@ def AIMove():
 								myBoard[row][col] = "M"
 								#AIloop = False
 								print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
+								breakyes = True
 								break
 							else:
 								myBoard[row][col] = "H"
@@ -126,12 +129,19 @@ def AIMove():
 								lasthit = 1
 								#AIloop = False
 								print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+								breakyes = True
 								break
-
 
 					else: #interval cut short
 						count = 0
 				count = 0 #because end of column
+
+				if breakyes == True:
+					break
+			if breakyes == True:
+				break		 				
+	
+			
 			count = 0
 			
 			for col in range(len(myBoard)):
@@ -143,6 +153,7 @@ def AIMove():
 								myBoard[row][col] = "M"
 								#AIloop = False
 								print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
+								breakyes = True
 								break
 							else:
 								myBoard[row][col] = "H"
@@ -151,12 +162,18 @@ def AIMove():
 								lasthit = 1
 								#AIloop = False
 								print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+								breakyes == True
 								break
 
 
 					else: #interval cut short
 						count = 0
 				count = 0 #because end of column
+				if breakyes == True:
+					break
+			if breakyes == True:
+				break		 				
+
 			count = 0			
 			
 			if count == 0:
