@@ -13,10 +13,10 @@ left = -1
 right = -1
 startcoords = [-1,-1]
 latestcoords = [-1,-1]
+killing = 0
 
 two = 0
-three1 = 0
-three2 = 0
+three = 0
 four = 0
 five = 0
 
@@ -29,8 +29,8 @@ def createBoard(n, arr):
 # print game board
 def printBoard(board):
 	for r in board:
-		print (s.join(r))
-	print ("\n")
+		print s.join(r)
+	print "%s\n"
 
 def isWin(board):
 	count = 0
@@ -106,7 +106,7 @@ def AIMove():
 			lowest = 5 #at least one ship because or else game would have been won
 			for row in range(len(myBoard)):
 				for col in range(len(myBoard)):
-					if myBoard[row][col] < lowest:
+					if (myBoard[row][col] != "*") and myBoard[row][col] < lowest:
 						lowest = myBoard[row][col]
 			#go across all rows
 			#if there is interval of length lowest or bigger, choose lowest-th from left			
@@ -123,6 +123,7 @@ def AIMove():
 								breakyes = True
 								break
 							else:
+								killing = myBoard[row][col]
 								myBoard[row][col] = "H"
 								startcoords = [row, col]
 								latestcoords = [row, col]
@@ -156,6 +157,7 @@ def AIMove():
 								breakyes = True
 								break
 							else:
+								killing = myBoard[row][col]
 								myBoard[row][col] = "H"
 								startcoords = [row, col]
 								latestcoords = [row, col]
@@ -197,6 +199,16 @@ def AIMove():
 					#ADI need to add logic if this sunk the boat
 					#AIloop = False
 					print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+					if lasthit == killing:
+						lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+						up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+						down = -1
+						left = -1
+						right = -1
+						startcoords = [-1,-1]
+						latestcoords = [-1,-1]
+						killing = 0
+
 					break
 			if latestcoords[0] != len(myBoard) and down != 0: #not last row (bottom row)		
 				if myBoard[row][col] == "*":
@@ -213,6 +225,15 @@ def AIMove():
 					#ADI need to add logic if this sunk the boat
 					#AIloop = False
 					print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+					if lasthit==killing:
+						lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+						up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+						down = -1
+						left = -1
+						right = -1
+						startcoords = [-1,-1]
+						latestcoords = [-1,-1]
+						killing = 0
 					break
 			if latestcoords[1] != 0 and left != 0: #not first col (leftmost col)		
 				if myBoard[row][col] == "*":
@@ -229,6 +250,15 @@ def AIMove():
 					#ADI need to add logic if this sunk the boat
 					#AIloop = False
 					print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+					if lasthit==killing:
+						lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+						up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+						down = -1
+						left = -1
+						right = -1
+						startcoords = [-1,-1]
+						latestcoords = [-1,-1]
+						killing = 0
 					break
 			if latestcoords[1] != len(myBoard) and right != 0: #not last col (rightmost col)		
 				if myBoard[row][col] == "*":
@@ -246,6 +276,15 @@ def AIMove():
 					#ADI need to add logic if this sunk the boat
 					#AIloop = False
 					print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+					if lasthit==killing:
+						lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+						up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+						down = -1
+						left = -1
+						right = -1
+						startcoords = [-1,-1]
+						latestcoords = [-1,-1]
+						killing = 0
 					break
 			else:
 				print("ERROR MUST GO RIGHT")		
