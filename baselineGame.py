@@ -162,7 +162,7 @@ def AIMove():
                     break
             
             else: #every square in probgrid has 0, no interval of length highest, choose randomly
-                while (true):
+                while (True):
                 
                     r = randRow(myBoard)
                     c = randCol(myBoard)
