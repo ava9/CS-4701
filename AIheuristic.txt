@@ -1,0 +1,292 @@
+# dont cheat ????
+def AIMove():
+    # simple random implementation for now, need to improve
+    AIloop = True
+    global lasthit, up, down, left, right, startcoords, latestcoords, killing
+    global shots
+
+    breakyes = False
+
+    while AIloop:
+        #1) finish a kill
+        #2) find new target
+        if lasthit == -1: #seeking new target
+            #for i in range(len(myBoard)):
+            highest = 1 #at least one ship because or else game would have been won
+            for row in range(len(myBoard)):
+                for col in range(len(myBoard)):
+                    #print ("HERE I AMMMMMMM ONe")
+                    if (myBoard[row][col] != "*") and (myBoard[row][col] != "M") and (myBoard[row][col] != "H") and int(myBoard[row][col]) > highest:
+                        #print ("HERE I AMMMMMMM Two")
+                        highest = int(myBoard[row][col])
+                        #print (lowest)
+            #go across all rows
+            #if there is interval of length lowest or bigger, choose lowest-th from left            
+            count = 0
+            for row in range(len(myBoard)):
+                for col in range(len(myBoard)):
+                    if (not myBoard[row][col] == "H") and (not myBoard[row][col] == "M"):
+                        count = count + 1
+                        if count == highest:
+                            #print ("SEEK ROW")
+                            if myBoard[row][col] == "*":
+                                myBoard[row][col] = "M"
+                                #AIloop = False
+                                print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
+                                breakyes = True
+                                break
+                            else:
+                                killing = int(myBoard[row][col])
+                                shots[int(myBoard[row][col])] += 1
+                                myBoard[row][col] = "H"
+                                startcoords = [row, col]
+                                latestcoords = [row, col]
+                                lasthit = 1
+                                
+                                #AIloop = False
+                                print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+                                breakyes = True
+                                break
+
+                    else: #interval cut short
+                        count = 0
+                count = 0 #because end of column
+
+                if breakyes == True:
+                    #print "BREAK ROW 1"
+                    break
+            if breakyes == True:
+                #print "BREAK ROW 2"
+                break                         
+    
+            
+            count = 0
+            
+            for col in range(len(myBoard)):
+                for row in range(len(myBoard)):
+                    if (not myBoard[row][col] == "H") and (not myBoard[row][col] == "M"):
+                        count = count + 1
+                        if count == highest:
+                            #print ("SEEK COL")
+                            if myBoard[row][col] == "*":
+                                myBoard[row][col] = "M"
+                                #AIloop = False
+                                print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
+                                breakyes = True
+                                break
+                            else:
+                                killing = int(myBoard[row][col])
+                                shots[int(myBoard[row][col])] += 1
+                                myBoard[row][col] = "H"
+                                startcoords = [row, col]
+                                latestcoords = [row, col]
+                                lasthit = 1
+                                #AIloop = False
+                                print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
+                                breakyes = True
+                                break
+
+
+                    else: #interval cut short
+                        count = 0
+                count = 0 #because end of column
+                
+                if breakyes == True:
+                    #print "BREAK COL 1"
+                    break
+            if breakyes == True:
+                #print "BREAK COL 2"
+                break                         
+
+            count = 0            
+            
+            if count == 0:
+                print("CORNER CASE")
+            #CORNER CASE
+                #print("ERROR ERROR ERROR did not find interval length highest")
+                r = randRow(myBoard)
+                c = randCol(myBoard)
+                if myBoard[r-1][c-1] == "M" or myBoard[r-1][c-1] == "H":
+                    AIloop = True
+                else:
+                    if myBoard[r-1][c-1] == "*":
+                        myBoard[r-1][c-1] = "M"
+                        AIloop = False
+                        print("AI Missed ("+str(r)+", "+str(c)+")\n")
+                    else:
+                        num = int(myBoard[r-1][c-1])
+                        myBoard[r-1][c-1] = "H"
+                        AIloop = False
+                        print("AI Hit ("+str(r)+", "+str(c)+")\n")
+                        shots[num] += 1
+                        if shots[num] == num:
+                            lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+                            up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+                            down = -1
+                            left = -1
+                            right = -1
+                            startcoords = [-1,-1]
+                            latestcoords = [-1,-1]
+                            killing = 0
+
+
+        #for ELSE, if you sink a ship, set up/down/eft/right all back to -1; set lasthit to -1, set startcoords and latestcoords to [-1,-1]
+        else: #kill existing target
+            #print ("HUNT")
+            row = latestcoords[0]
+            col = latestcoords[1]
+            if latestcoords[0] != 0 and up != 0 and myBoard[row-1][col] != "M" and myBoard[row-1][col] != "H" and down!=1 and left!=1 and right!=1: 
+            #not first row (top row)
+                if myBoard[row-1][col] == "*":
+                    myBoard[row-1][col] = "M"
+                    if up==1:
+                        down = 1
+                    up = 0
+                    latestcoords = startcoords
+                    print("AI Missed ("+str(row)+", "+str(col+1)+")\n")
+                    break
+                else:
+                    up = 1
+                    num = int(myBoard[row-1][col])
+                    myBoard[row-1][col] = "H"
+                    latestcoords = [row-1, col]
+                    lasthit = lasthit + 1
+                    shots[num] += 1
+                    
+                    if num != killing:
+                        latestcoords = startcoords
+                        up=0
+                        down = 1
+                    
+                    print("AI Hit ("+str(row)+", "+str(col+1)+")\n")
+                    #if lasthit == killing:
+                    if shots[num] == num:
+                        lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+                        up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+                        down = -1
+                        left = -1
+                        right = -1
+                        startcoords = [-1,-1]
+                        latestcoords = [-1,-1]
+                        killing = 0
+
+                    break
+            if latestcoords[0] != len(myBoard)-1 and down != 0 and myBoard[row+1][col] != "M" and myBoard[row+1][col] != "H" and left!=1 and right!=1: 
+            #not last row (bottom row)        
+                if myBoard[row+1][col] == "*":
+                    myBoard[row+1][col] = "M"
+                    down = 0
+                    latestcoords = startcoords
+                    print("AI Missed ("+str(row+2)+", "+str(col+1)+")\n")
+                    break
+                else:
+                    down = 1
+                    num = int(myBoard[row+1][col])
+                    myBoard[row+1][col] = "H"
+                    latestcoords = [row+1, col]
+                    lasthit = lasthit + 1
+                    shots[num] += 1
+                    
+                    if num != killing:
+                        latestcoords = startcoords
+                        down = 0
+                    
+                    print("AI Hit ("+str(row+2)+", "+str(col+1)+")\n")
+                    #if lasthit==killing:
+                    if shots[num] == num:
+                        lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+                        up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+                        down = -1
+                        left = -1
+                        right = -1
+                        startcoords = [-1,-1]
+                        latestcoords = [-1,-1]
+                        killing = 0
+                    break
+            if latestcoords[1] != 0 and left != 0 and myBoard[row][col-1] != "M" and myBoard[row][col-1] != "H" and right!=1: 
+            #not first col (leftmost col)        
+                if myBoard[row][col-1] == "*":
+                    myBoard[row][col-1] = "M"
+                    if left==1:
+                        right = 1
+                    left = 0
+                    latestcoords = startcoords
+                    print("AI Missed ("+str(row+1)+", "+str(col)+")\n")
+                    break
+                else:
+                    left = 1
+                    num = int(myBoard[row][col-1])
+                    myBoard[row][col-1] = "H"
+                    latestcoords = [row, col-1]
+                    lasthit = lasthit + 1
+                    shots[num] += 1
+                    
+                    if num != killing:
+                        latestcoords = startcoords
+                        left = 0
+                        right = 1
+                        
+                    print("AI Hit ("+str(row+1)+", "+str(col)+")\n")
+                    #if lasthit==killing:
+                    if shots[num] == num:
+                        lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+                        up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+                        down = -1
+                        left = -1
+                        right = -1
+                        startcoords = [-1,-1]
+                        latestcoords = [-1,-1]
+                        killing = 0
+                    break
+            if latestcoords[1] != len(myBoard)-1 and right != 0 and myBoard[row][col+1] != "M" and myBoard[row][col+1] != "H": 
+            #not last col (rightmost col)        
+                if myBoard[row][col+1] == "*":
+                    myBoard[row][col+1] = "M"
+                    right = 0
+                    print("ERROR MUST GO RIGHT")
+                    latestcoords = startcoords
+                    print("AI Missed ("+str(row+1)+", "+str(col+2)+")\n")
+                    break
+                else:
+                    num = int(myBoard[row][col+1])
+                    myBoard[row][col+1] = "H"
+                    latestcoords = [row, col+1]
+                    lasthit = lasthit + 1
+                    shots[num] += 1
+                    
+                    if num != killing:
+                        latestcoords = startcoords
+                    
+                    print("AI Hit ("+str(row+1)+", "+str(col+2)+")\n")
+                    #if lasthit==killing:
+                    if shots[num] == num:
+                        lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+                        up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+                        down = -1
+                        left = -1
+                        right = -1
+                        startcoords = [-1,-1]
+                        latestcoords = [-1,-1]
+                        killing = 0
+                    break
+            else:
+                print("ERROR MUST GO RIGHT")        
+                
+        
+
+
+        #adi's code
+        #r = randRow(myBoard)
+        #c = randCol(myBoard)
+        #if myBoard[r-1][c-1] == "M" or myBoard[r-1][c-1] == "H":
+        #    AIloop = True
+        #else:
+        #    if myBoard[r-1][c-1] == "*":
+        #        myBoard[r-1][c-1] = "M"
+        #        AIloop = False
+        #        print("AI Missed ("+str(r)+", "+str(c)+")\n")
+        #    else:
+        #        myBoard[r-1][c-1] = "H"
+        #        AIloop = False
+        #        print("AI Hit ("+str(r)+", "+str(c)+")\n")
+

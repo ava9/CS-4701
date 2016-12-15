@@ -99,124 +99,95 @@ def AIMove():
         #1) finish a kill
         #2) find new target
         if lasthit == -1: #seeking new target
-            #for i in range(len(myBoard)):
+
             highest = 1 #at least one ship because or else game would have been won
             for row in range(len(myBoard)):
-                for col in range(len(myBoard)):
-                    #print ("HERE I AMMMMMMM ONe")
+                for col in range(len(myBoard)):        
                     if (myBoard[row][col] != "*") and (myBoard[row][col] != "M") and (myBoard[row][col] != "H") and int(myBoard[row][col]) > highest:
-                        #print ("HERE I AMMMMMMM Two")
                         highest = int(myBoard[row][col])
-                        #print (lowest)
-            #go across all rows
-            #if there is interval of length lowest or bigger, choose lowest-th from left            
+        
+            probgrid = [[0 for x in range(len(myBoard))] for y in range(len(myBoard))]
+        
             count = 0
-            for row in range(len(myBoard)):
-                for col in range(len(myBoard)):
-                    if (not myBoard[row][col] == "H") and (not myBoard[row][col] == "M"):
-                        count = count + 1
-                        if count == highest:
-                            #print ("SEEK ROW")
-                            if myBoard[row][col] == "*":
-                                myBoard[row][col] = "M"
-                                #AIloop = False
-                                print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
-                                breakyes = True
-                                break
-                            else:
-                                killing = int(myBoard[row][col])
-                                shots[int(myBoard[row][col])] += 1
-                                myBoard[row][col] = "H"
-                                startcoords = [row, col]
-                                latestcoords = [row, col]
-                                lasthit = 1
-                                
-                                #AIloop = False
-                                print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
-                                breakyes = True
-                                break
-
-                    else: #interval cut short
-                        count = 0
-                count = 0 #because end of column
-
-                if breakyes == True:
-                    #print "BREAK ROW 1"
-                    break
-            if breakyes == True:
-                #print "BREAK ROW 2"
-                break                         
-    
-            
-            count = 0
-            
-            for col in range(len(myBoard)):
-                for row in range(len(myBoard)):
-                    if (not myBoard[row][col] == "H") and (not myBoard[row][col] == "M"):
-                        count = count + 1
-                        if count == highest:
-                            #print ("SEEK COL")
-                            if myBoard[row][col] == "*":
-                                myBoard[row][col] = "M"
-                                #AIloop = False
-                                print("AI Missed ("+str(row+1)+", "+str(col+1)+")\n")
-                                breakyes = True
-                                break
-                            else:
-                                killing = int(myBoard[row][col])
-                                shots[int(myBoard[row][col])] += 1
-                                myBoard[row][col] = "H"
-                                startcoords = [row, col]
-                                latestcoords = [row, col]
-                                lasthit = 1
-                                #AIloop = False
-                                print("AI Hit ("+str(row+1)+", "+str(col+1)+")\n")
-                                breakyes = True
-                                break
-
-
-                    else: #interval cut short
-                        count = 0
-                count = 0 #because end of column
+            for row in range(len(myBoard) + 1 - highest):
+                for col in range(len(myBoard) + 1 - highest):
+                    for i in range(highest):
+                        if (not myBoard[row][col+i] == "H") and (not myBoard[row][col+i] == "M"):
+                            count = count + 1
+                    if count == highest: #you have the full interval, increment each square's prob value
+                        for j in range(highest):
+                            probgrid[row][col+i] = probgrid[row][col+i] + 1
+                    count = 0        
+                        
+            for col in range(len(myBoard) + 1 - highest):
+                for row in range(len(myBoard) + 1 - highest):
+                    for m in range(highest):
+                        if (not myBoard[row+m][col] == "H") and (not myBoard[row+m][col] == "M"):
+                            count = count + 1
+                    if count == highest:
+                        for n in range(highest):
+                            probgrid[row+n][col] = probgrid[row+n][col] + 1 
+                    count = 0        
+                        
+            #now find highest prob square (take first one)
                 
-                if breakyes == True:
-                    #print "BREAK COL 1"
-                    break
-            if breakyes == True:
-                #print "BREAK COL 2"
-                break                         
-
-            count = 0            
+            maxprob = 0
+            maxrow = -1
+            maxcol = -1
+            for row in range(len(myBoard)):
+                for col in range(len(myBoard)):        
+                    if probgrid[row][col] > maxprob:
+                        maxprob = probgrid[row][col]
+                        maxrow = row
+                        maxcol = col
             
-            if count == 0:
-                print("CORNER CASE")
-            #CORNER CASE
-                #print("ERROR ERROR ERROR did not find interval length highest")
-                r = randRow(myBoard)
-                c = randCol(myBoard)
-                if myBoard[r-1][c-1] == "M" or myBoard[r-1][c-1] == "H":
-                    AIloop = True
+            if maxprob > 0:
+                if myBoard[maxrow][maxcol] == "*":
+                    myBoard[maxrow][maxcol] = "M"
+                                
+                    print("AI Missed ("+str(maxrow+1)+", "+str(maxcol+1)+")\n")
+                    breakyes = True
+                    break
+                    
                 else:
-                    if myBoard[r-1][c-1] == "*":
-                        myBoard[r-1][c-1] = "M"
-                        AIloop = False
-                        print("AI Missed ("+str(r)+", "+str(c)+")\n")
-                    else:
-                        num = int(myBoard[r-1][c-1])
-                        myBoard[r-1][c-1] = "H"
-                        AIloop = False
-                        print("AI Hit ("+str(r)+", "+str(c)+")\n")
-                        shots[num] += 1
-                        if shots[num] == num:
-                            lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
-                            up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
-                            down = -1
-                            left = -1
-                            right = -1
-                            startcoords = [-1,-1]
-                            latestcoords = [-1,-1]
-                            killing = 0
+                    killing = int(myBoard[maxrow][maxcol])
+                    shots[int(myBoard[maxrow][maxcol])] += 1
+                    myBoard[maxrow][maxcol] = "H"
+                    startcoords = [maxrow, maxcol]
+                    latestcoords = [maxrow, maxcol]
+                    lasthit = 1
+                                
+                    print("AI Hit ("+str(maxrow+1)+", "+str(maxcol+1)+")\n")
+                    breakyes = True
+                    break
+            
+            else: #every square in probgrid has 0, no interval of length highest, choose randomly
+                while (true):
+                
+                    r = randRow(myBoard)
+                    c = randCol(myBoard)
+                    if myBoard[r-1][c-1] != "M" and myBoard[r-1][c-1] != "H":
+                        break
+                
+                if myBoard[r-1][c-1] == "*":
+                    myBoard[r-1][c-1] = "M"
+                    AIloop = False
+                    print("AI Missed ("+str(r)+", "+str(c)+")\n")
+                else:
+                    num = int(myBoard[r-1][c-1])
+                    myBoard[r-1][c-1] = "H"
+                    AIloop = False
+                    print("AI Hit ("+str(r)+", "+str(c)+")\n")
+                    shots[num] += 1
+                        
+                        
+         
+            
+            
+            
+#BEGIN seeking a ship -------------------------------
 
+#END OF SEEKING A SHIP-------------------------------------------------------------------------------
 
         #for ELSE, if you sink a ship, set up/down/eft/right all back to -1; set lasthit to -1, set startcoords and latestcoords to [-1,-1]
         else: #kill existing target
@@ -358,7 +329,16 @@ def AIMove():
                         killing = 0
                     break
             else:
-                print("ERROR MUST GO RIGHT")        
+                #print("ERROR MUST GO RIGHT")
+                #RESET
+                lasthit = -1 #0 if last hit sunk a ship, or no hits yet; otherwise num hits so far on this ship
+                up = -1 #direction we are pursuing the current kill; 0 if last hti sunk a ship, or no hits yet
+                down = -1
+                left = -1
+                right = -1
+                startcoords = [-1,-1]
+                latestcoords = [-1,-1]
+                killing = 0
                 
         
 
