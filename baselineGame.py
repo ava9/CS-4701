@@ -564,7 +564,7 @@ while(True):
 #create and print boards
 myBoard = createBoard(int(n), myBoard)
 AIBoard = createBoard(int(n), AIBoard)
-print("my board is this: \n")
+print("My board is this: \n")
 printBoard(myBoard)
 print("\n")
 print("AI board is this: \n")
